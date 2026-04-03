@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import '../asset/css/Register.css'
 import { Link } from 'react-router-dom'
-import { buildApiUrl } from '../config/api';
+import { buildApiUrl, fetchJsonWithRetry } from '../config/api';
 function Register() {
     const [inputs, setInputs] = useState({})
     const [showerror, setShowError] = useState(false)
@@ -22,24 +22,37 @@ function Register() {
             }
             var params = JSON.stringify(paramsjson);
             try{
-                const res = await fetch(buildApiUrl("auth/signup"),
+                const { response, data, error: requestError } = await fetchJsonWithRetry(
+                    buildApiUrl("auth/signup"),
                     {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
                         },
                         body: params
-    
-                    }
+                    },
+                    { retries: 3, retryDelayMs: 2000 }
                 )
-                const data = await res.json();
-                if (data.success === true) {
+
+                if (response?.ok && data?.success === true) {
                     setError("Account Created Successfully. Please Login")
                     setInputs({})
                     setShowError(true);
                 }
+                else if (response && response.status === 409) {
+                    setError("User already exists")
+                    setShowError(true);
+                }
+                else if (response && [502, 503, 504].includes(response.status)) {
+                    setError("Backend is waking up. Please try again in a few seconds.")
+                    setShowError(true);
+                }
+                else if (requestError) {
+                    setError("Failed to connect with server")
+                    setShowError(true);
+                }
                 else {
-                    setError("User already exist or network issue")
+                    setError(data?.message || "Registration failed")
                     setShowError(true);
                 }
 

@@ -4,9 +4,9 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const AuthRouter = require('./routes/auth');
 const RecordRouter = require('./routes/record');
+const connectDB = require('./models/db');
 
 require('dotenv').config();
-require('./models/db');
 
 
 const PORT = process.env.PORT || 5000;
@@ -22,7 +22,17 @@ app.get('/test', (req, res) => {
   res.send('Hello World!')
 })
 
-app.listen(PORT, () => {
-  console.log(`Server Running on port ${PORT}`)
-})
+async function startServer() {
+  try {
+    await connectDB();
+    app.listen(PORT, () => {
+      console.log(`Server Running on port ${PORT}`)
+    })
+  } catch (err) {
+    console.log('Failed to start server because database connection failed', err);
+    process.exit(1);
+  }
+}
+
+startServer();
 

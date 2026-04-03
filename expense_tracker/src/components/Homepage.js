@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import img1 from '../asset/img/dashboard.png'
 import { Link, useNavigate } from 'react-router-dom'
-import { buildApiUrl } from '../config/api'
+import { buildApiUrl, fetchJsonWithRetry } from '../config/api'
 function Homepage() {
 
     const navigate = useNavigate();
@@ -65,25 +65,32 @@ function Homepage() {
         }
         var params = JSON.stringify(paramsjson);
         try {
-            const res = await fetch(buildApiUrl("auth/login"),
+            const { response, data, error: requestError } = await fetchJsonWithRetry(
+                buildApiUrl("auth/login"),
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: params
-
-                }
+                },
+                { retries: 3, retryDelayMs: 2000 }
             )
-            const data = await res.json()
 
-
-            if (data.success === true) {
+            if (response?.ok && data?.success === true) {
                 localStorage.setItem("name", data.name);
                 localStorage.setItem("email", data.email);
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("islogin", true);
                 navigate('/dashboard');
+            }
+            else if (response && [502, 503, 504].includes(response.status)) {
+                setShowError(true);
+                setError("Backend is waking up. Please try again in a few seconds.")
+            }
+            else if (requestError) {
+                setShowError(true);
+                setError("Failed to connect with server")
             }
             else {
                 setShowError(true);
