@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import img1 from '../asset/img/cart.jpg'
 import del from '../asset/img/delete.svg'
 import edit from '../asset/img/edit.png'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import api from '../api/api.json'
 function Dashboard() {
     const navigate = useNavigate();

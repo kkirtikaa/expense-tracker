@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import '../asset/css/Register.css'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import api from '../api/api.json';
 function Register() {
     const [inputs, setInputs] = useState({})
     const [showerror, setShowError] = useState(false)
     const [error, setError] = useState("")
-    const navigate = useNavigate();
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -14,7 +13,7 @@ function Register() {
     }
     const doRegister = async (event) => {
         event.preventDefault();
-        if (inputs.pass == inputs.cnfpass) {
+        if (inputs.pass === inputs.cnfpass) {
             console.log("Clicked", inputs);
             var paramsjson = {
                 name: inputs.name,
@@ -34,7 +33,7 @@ function Register() {
                     }
                 )
                 const data = await res.json();
-                if (data.success == true) {
+                if (data.success === true) {
                     setError("Account Created Successfully. Please Login")
                     setInputs({})
                     setShowError(true);

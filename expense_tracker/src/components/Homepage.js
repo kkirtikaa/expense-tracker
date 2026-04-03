@@ -78,7 +78,7 @@ function Homepage() {
             const data = await res.json()
 
 
-            if (data.success == true) {
+            if (data.success === true) {
                 localStorage.setItem("name", data.name);
                 localStorage.setItem("email", data.email);
                 localStorage.setItem("token", data.token);
@@ -107,7 +107,7 @@ function Homepage() {
             <div className='leftcontainer'>
                 <p>Welcome to Expense Tracker</p>
                 <p>Manage all your expenses here</p>
-                <img src={img1} />
+                <img src={img1} alt='Expense dashboard illustration' />
 
             </div>
             <div className='rightcontainer'>

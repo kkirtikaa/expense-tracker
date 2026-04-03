@@ -90,7 +90,7 @@ const closeModal = () => {
             </div>
                     </div>
       <div style={{ display: 'flex', width: '90%', alignItems: 'center' }}>
-        <img src={Logo} />
+        <img src={Logo} alt='Expense Tracker logo' />
         <h2>Expense Tracker</h2>
       </div>
       {
@@ -98,7 +98,7 @@ const closeModal = () => {
           <div style={{ width: '10%', display: 'flex', alignItems: 'center' }}>
             <p>{username}</p>
             <div className="dropdown">
-              <img style={{ width: '10px', height: '10px', marginLeft: '10px' }} src={arrow} />
+              <img style={{ width: '10px', height: '10px', marginLeft: '10px' }} src={arrow} alt='Open user menu' />
               <div className="dropdown-content">
                 <p onClick={openModal}>Change Password</p>
                 <p onClick={doLogout}>Logout</p>
