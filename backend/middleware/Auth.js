@@ -3,19 +3,30 @@ const jwt = require('jsonwebtoken');
 
 
 const checkToken = (req, res, next) => {
-    const token = req.headers['token'];
+    const headerToken = req.headers['token'];
+    const authHeader = req.headers.authorization;
+    const bearerToken = authHeader && authHeader.startsWith('Bearer ')
+        ? authHeader.slice(7).trim()
+        : null;
+    const token = headerToken || bearerToken;
+
     if (!token) {
-        return res.status(404)
+        return res.status(401)
             .json({ message: 'JWT token is required' });
     }
+
     try {
-        const verify = jwt.verify(token, process.env.JWT_KEY);
-        console.log("JWT ",token,verify);
+        const verified = jwt.verify(token, process.env.JWT_KEY);
+        req.user = verified;
         next();
     } catch (err) {
-        console.log(err);
+        if (err.name === 'TokenExpiredError') {
+            return res.status(401)
+                .json({ message: 'JWT token expired. Please login again.' });
+        }
+
         return res.status(403)
-            .json({ message: 'JWT token is wrong or expired' });
+            .json({ message: 'JWT token is invalid' });
     }
 }
 

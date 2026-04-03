@@ -29,6 +29,13 @@ function Dashboard() {
         try { return await res.json(); } catch { return null; }
     }
 
+    function forceRelogin(message = "Session expired. Please login again.") {
+        setError(message);
+        localStorage.removeItem("token");
+        localStorage.removeItem("islogin");
+        navigate('/');
+    }
+
     async function requestWithFallbacks({ primary, fallbacks = [] }) {
         const attempts = [primary, ...fallbacks];
         let last = null;
@@ -50,6 +57,10 @@ function Dashboard() {
             const res = await fetch(api.baseurl + "record/get?email=" + encodeURIComponent(email), {
                 headers: { token },
             });
+            if (res.status === 401 || res.status === 403) {
+                forceRelogin();
+                return;
+            }
             const data = await res.json();
 
             // Backend returns: { expenses: [...], count, success }
@@ -142,6 +153,10 @@ function Dashboard() {
             });
 
             if (!result?.res?.ok) {
+                if (result?.res?.status === 401 || result?.res?.status === 403) {
+                    forceRelogin(result?.data?.message || "Session expired. Please login again.");
+                    return;
+                }
                 console.log("Add expense failed:", result);
                 setError(result?.data?.message || "Add expense failed");
                 return;
@@ -184,6 +199,10 @@ function Dashboard() {
             });
 
             if (!result?.res?.ok) {
+                if (result?.res?.status === 401 || result?.res?.status === 403) {
+                    forceRelogin(result?.data?.message || "Session expired. Please login again.");
+                    return;
+                }
                 console.log("Delete expense failed:", result);
                 setError(result?.data?.message || "Delete expense failed");
                 return;
@@ -235,6 +254,10 @@ function Dashboard() {
             });
 
             if (!result?.res?.ok) {
+                if (result?.res?.status === 401 || result?.res?.status === 403) {
+                    forceRelogin(result?.data?.message || "Session expired. Please login again.");
+                    return;
+                }
                 console.log("Edit expense failed:", result);
                 setError(result?.data?.message || "Edit expense failed");
                 return;
