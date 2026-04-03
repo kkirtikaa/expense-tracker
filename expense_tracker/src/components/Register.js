@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import '../asset/css/Register.css'
 import { Link } from 'react-router-dom'
-import api from '../api/api.json';
+import { buildApiUrl } from '../config/api';
 function Register() {
     const [inputs, setInputs] = useState({})
     const [showerror, setShowError] = useState(false)
@@ -22,7 +22,7 @@ function Register() {
             }
             var params = JSON.stringify(paramsjson);
             try{
-                const res = await fetch(api.baseurl + "auth/signup",
+                const res = await fetch(buildApiUrl("auth/signup"),
                     {
                         method: "POST",
                         headers: {

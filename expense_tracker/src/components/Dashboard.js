@@ -3,7 +3,7 @@ import img1 from '../asset/img/cart.jpg'
 import del from '../asset/img/delete.svg'
 import edit from '../asset/img/edit.png'
 import { useNavigate } from 'react-router-dom'
-import api from '../api/api.json'
+import { buildApiUrl } from '../config/api'
 function Dashboard() {
     const navigate = useNavigate();
     const [inputs, setInputs] = useState({ title: "", expense: "", type: "", date: "" });
@@ -54,7 +54,7 @@ function Dashboard() {
         setLoading(true);
         setError("");
         try {
-            const res = await fetch(api.baseurl + "record/get?email=" + encodeURIComponent(email), {
+            const res = await fetch(buildApiUrl("record/get?email=" + encodeURIComponent(email)), {
                 headers: { token },
             });
             if (res.status === 401 || res.status === 403) {
@@ -141,12 +141,12 @@ function Dashboard() {
         try {
             const result = await requestWithFallbacks({
                 primary: {
-                    url: api.baseurl + "record/add",
+                    url: buildApiUrl("record/add"),
                     options: { method: "POST", headers: authHeaders, body: JSON.stringify(payload) },
                 },
                 fallbacks: [
                     {
-                        url: api.baseurl + "record/create",
+                        url: buildApiUrl("record/create"),
                         options: { method: "POST", headers: authHeaders, body: JSON.stringify(payload) },
                     },
                 ],
@@ -183,16 +183,16 @@ function Dashboard() {
         try {
             const result = await requestWithFallbacks({
                 primary: {
-                    url: api.baseurl + "record/remove?id=" + encodeURIComponent(id), // correct backend route
+                    url: buildApiUrl("record/remove?id=" + encodeURIComponent(id)), // correct backend route
                     options: { method: "DELETE", headers: { token } },
                 },
                 fallbacks: [
                     {
-                        url: api.baseurl + "record/remove?id=" + encodeURIComponent(id),
+                        url: buildApiUrl("record/remove?id=" + encodeURIComponent(id)),
                         options: { method: "DELETE", headers: { token } },
                     },
                     {
-                        url: api.baseurl + "record/delete?id=" + encodeURIComponent(id),
+                        url: buildApiUrl("record/delete?id=" + encodeURIComponent(id)),
                         options: { method: "DELETE", headers: { token } },
                     },
                 ],
@@ -238,16 +238,16 @@ function Dashboard() {
         try {
             const result = await requestWithFallbacks({
                 primary: {
-                    url: api.baseurl + "record/update?id=" + encodeURIComponent(id),
+                    url: buildApiUrl("record/update?id=" + encodeURIComponent(id)),
                     options: { method: "PUT", headers: authHeaders, body: JSON.stringify(payload) },
                 },
                 fallbacks: [
                     {
-                        url: api.baseurl + "record/update",
+                        url: buildApiUrl("record/update"),
                         options: { method: "POST", headers: authHeaders, body: JSON.stringify(payload) },
                     },
                     {
-                        url: api.baseurl + "record/edit?id=" + encodeURIComponent(id),
+                        url: buildApiUrl("record/edit?id=" + encodeURIComponent(id)),
                         options: { method: "PUT", headers: authHeaders, body: JSON.stringify(payload) },
                     },
                 ],

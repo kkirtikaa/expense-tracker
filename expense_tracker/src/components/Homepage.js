@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import img1 from '../asset/img/dashboard.png'
 import { Link, useNavigate } from 'react-router-dom'
-import api from '../api/api.json'
+import { buildApiUrl } from '../config/api'
 function Homepage() {
 
     const navigate = useNavigate();
@@ -65,7 +65,7 @@ function Homepage() {
         }
         var params = JSON.stringify(paramsjson);
         try {
-            const res = await fetch(api.baseurl + "auth/login",
+            const res = await fetch(buildApiUrl("auth/login"),
                 {
                     method: "POST",
                     headers: {

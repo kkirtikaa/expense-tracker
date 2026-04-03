@@ -16,6 +16,7 @@ expense_tracker/build
 
 # misc
 expense_tracker/.DS_Store
+expense_tracker/.env
 expense_tracker/.env.local
 expense_tracker/.env.development.local
 expense_tracker/.env.test.local
